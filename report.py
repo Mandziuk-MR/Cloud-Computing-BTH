@@ -1,8 +1,7 @@
 import matplotlib.pyplot as plt
 import coingecko
-import matplotlib.patheffects as path_effects
 
-days = 7
+days = 13
 bitcoin24Data = coingecko.getCoinData("bitcoin", days-1, "daily")
 ethereum24Data = coingecko.getCoinData("ethereum", days-1, "daily")
 
@@ -61,7 +60,6 @@ def Volatileindex(prices):
     maxl = float(max(prices))  # vlist= list of asset prices from last week
     minl = float(min(prices))
     value = ((maxl - minl) / maxl) * 100
-    print(value)
     if value > X:
         return "This asset is volatile"
     else:
@@ -80,34 +78,38 @@ def WhatToDo(RSI):
         return "Keep this asset"
 
 # creating plot
+def plotgen():
+    index1 = plt.subplot(3,2,1)
+    yaxis = [i+1 for i in range(days)]
+    plt.plot(yaxis,pricesBTC,"-",color = 'y',label = "Bitcoin price")
+    plt.plot([1,days],[averageBTC,averageBTC],"--",color = 'g',label = "Average price")
+    plt.title("Bitcoin investment", size=18)
+    plt.legend()
+    index1.tick_params(axis='both', which='major', labelsize=6)
 
-index1 = plt.subplot(3,2,1)
-yaxis = [i+1 for i in range(days)]
-plt.plot(yaxis,pricesBTC,"-",color = 'y',label = "Bitcoin price")
-plt.plot([1,days],[averageBTC,averageBTC],"--",color = 'g',label = "Average price")
-plt.title("Bitcoin investment", size=18)
-plt.legend()
-index1.tick_params(axis='both', which='major', labelsize=6)
+    index2 = plt.subplot(3,2,2)
+    plt.plot(yaxis,pricesETH,"-",color = 'm',label = "Ethereum price")
+    plt.plot([1,days],[averageETH,averageETH],"--",color = 'g',label = "Average price")
+    plt.title("Ethereum investment", size=18)
+    plt.legend()
+    index2.tick_params(axis='both', which='major', labelsize=6)
 
-index2 = plt.subplot(3,2,2)
-plt.plot(yaxis,pricesETH,"-",color = 'm',label = "Ethereum price")
-plt.plot([1,days],[averageETH,averageETH],"--",color = 'g',label = "Average price")
-plt.title("Ethereum investment", size=18)
-plt.legend()
-index2.tick_params(axis='both', which='major', labelsize=6)
+    index3 = plt.subplot(3,2,5)
+    plt.bar(yaxis, volBTC, color='b', label="Bitcoin volume")
+    RSIBTC = RSIindex(pricesBTC)
+    plt.title(Volatileindex(pricesETH) + "\n RSI Value: % d \n" % RSIBTC + WhatToDo(RSIBTC) + "\n", size=13)
+    index3.tick_params(axis='both', which='major', labelsize=6)
 
-index3 = plt.subplot(3,2,5)
-plt.bar(yaxis, volBTC, color='b', label="Bitcoin volume")
-RSIBTC = RSIindex(pricesBTC)
-plt.title(Volatileindex(pricesETH) + "\n RSI Value: % d \n" % RSIBTC + WhatToDo(RSIBTC) + "\n", size=13)
-index3.tick_params(axis='both', which='major', labelsize=6)
+    index4 = plt.subplot(3,2,6)
+    plt.bar(yaxis,volETH,color = 'b',label = "Ethereum volume")
+    RSIETH = RSIindex(pricesETH)
+    plt.title(Volatileindex(pricesETH) + "\n RSI Value: % d \n" % RSIETH + WhatToDo(RSIETH) + "\n", size=13)
+    index4.tick_params(axis='both', which='major', labelsize=6)
 
-index4 = plt.subplot(3,2,6)
-plt.bar(yaxis,volETH,color = 'b',label = "Ethereum volume")
-RSIETH = RSIindex(pricesETH)
-plt.title(Volatileindex(pricesETH) + "\n RSI Value: % d \n" % RSIETH + WhatToDo(RSIETH) + "\n", size=13)
-index4.tick_params(axis='both', which='major', labelsize=6)
+    plt.savefig("report")
 
+def main():
+    plotgen()
 
-plt.show()
-
+if __name__ == "__main__":
+    main()
